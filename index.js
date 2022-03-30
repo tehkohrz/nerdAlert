@@ -4,7 +4,7 @@ import pg from 'pg';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 
-import { getCode } from './scripts/getCode.js';
+import { getCode } from './middleware/getCode.js';
 // dotenv.config();
 
 // PG Declarations
@@ -23,7 +23,6 @@ const pool = new Pool(pgConnectionConfigs);
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('plugin'));
-app.use(express.static('scripts'));
 app.use(express.urlencoded({
   extended: false,
 }));
@@ -32,7 +31,7 @@ app.use(methodOverride('_method'));
 
 // MAIN Route to Editor
 app.get('/', getCode ,(req, res) => {
-  // getCode();
+  getCode();
   // const sqlQuery = `SELECT * FROM codebin WHERE id = 37`;
   // pool.query(sqlQuery)
   //   .then((result) => {
