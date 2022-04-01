@@ -1,10 +1,8 @@
-import { getHash } from "./getHash";
+import { getSessionHash } from "./getHash";
 import { getUserId } from "../datastore/userInfo";
-import dotenv from 'dotenv';
-dotenv.config();
 
-// Middleware to authenticate session or password hash depending on the presence of sessionhash
-const SALT = process.env.SECRETSALT;
+// Middleware to authenticate session based on the username
+// Default output is cookie.isLoggedIn = false
 
 export function checkHash(req, res, next) {
   // default false login
@@ -14,14 +12,14 @@ export function checkHash(req, res, next) {
   // Check for required cookie values for session authentication
   if (sessionHash && user) {
     // Checking userName + SALT against sessionHash stored in cookies
-    const sessionString = user + SALT;
-    const hashed = getHash(sessionString);
+    const sessionHash = getSessionHash(user);
     if (hashed === sessionHash) {
       req.userId = getUserId(user);
       req.isUserLoggedIn = true;
     }
-    next();
   }
+  next();
   // Cookies values not present or authentication failed redirect to login
-  res.redirect('/login');
+  // Redirect should be
+  // res.redirect('/login');
 }
