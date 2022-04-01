@@ -1,23 +1,9 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import pg from 'pg';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
-
 import { getCode } from './middleware/getCode.js';
-// dotenv.config();
-
-// PG Declarations
-const {
-  Pool,
-} = pg;
-const pgConnectionConfigs = {
-  user: 'tehkohrz',
-  host: '127.0.0.1',
-  database: 'nerdTest',
-  port: 5432, // Postgres server always runs on this port by default
-};
-const pool = new Pool(pgConnectionConfigs);
+dotenv.config();
 
 // Express Declarations
 const app = express();

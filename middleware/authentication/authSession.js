@@ -1,4 +1,5 @@
 import { getHash } from "./getHash";
+import { getUserId } from "../datastore/userInfo";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,6 +17,7 @@ export function checkHash(req, res, next) {
     const sessionString = user + SALT;
     const hashed = getHash(sessionString);
     if (hashed === sessionHash) {
+      req.userId = getUserId(user);
       req.isUserLoggedIn = true;
     }
     next();
