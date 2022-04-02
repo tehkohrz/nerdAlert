@@ -1,7 +1,9 @@
 import jsSHA from 'jssha';
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+const envPath = '.env';
+dotenv.config({path: path.normalize(envPath)});
 const SALT = process.env.SECRETSALT;
 
 export function getHash(unHashedString) {

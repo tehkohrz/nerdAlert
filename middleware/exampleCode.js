@@ -1,6 +1,6 @@
 import { header } from "express/lib/request";
 import res from "express/lib/response";
-import pool from "../initPG.js";
+import pool from "./datastore/initPG.js";
 
 export function getCode (req, res, next) {
 const sqlQuery = `SELECT * FROM codebin WHERE id = 37`;
@@ -14,7 +14,7 @@ const sqlQuery = `SELECT * FROM codebin WHERE id = 37`;
       console.log('Error here!',error);
     });
   }
-  //1. Route
+  // 1. Route
   // 2. express route handler
   getCode (){
     const obj = getCodeById();

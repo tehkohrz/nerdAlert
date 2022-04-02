@@ -1,5 +1,5 @@
-import { getUserInfo } from "../datastore/userInfo";
-import {getHash, getSessionHash} from "getHash.js"
+import { getUserInfo } from "../datastore/userInfo.js";
+import {getHash, getSessionHash} from "../authentication/getHash.js"
 
 
 // Login routehandler for POST not to be used to authenticate or redirect with error

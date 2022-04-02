@@ -1,27 +1,41 @@
-<%- include('headerBar') %> 
+<%- include('headerBar') %>
 
 <body>
-  <textarea name="codeEditor" id="codeEditor" onchange ='saveCode()'><%=data.code%></textarea> 
-  <form action="/test" method="POST">
-    <textarea name="codeSaver" style="display: none" id="codeSaver"></textarea> 
-    <button onclick ='saveCode()' >Save</button>
-    <!-- <button type ='submit'>Submit</button> -->
+  <textarea name="codeEditor" id="codeEditor" onchange='saveCode(e)'><% if(codeData){ %><%=codeData%><%}%></textarea>
+  <form action="/save" method="POST">
+    <textarea name="codeSaver" style="display: none" id="codeSaver"></textarea>
+    <button onclick='saveCode()'>Save</button>
   </form>
   <!-- Init for Code editor -->
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
-        lineNumbers: true,
-        theme: 'monokai',
-        mode: 'javascript',
-        lineWrapping: true,
-        styleActiveLine: true,
-      });
-      function saveCode (e) {
-        const data = editor.doc.getValue(); // this gets the data out with the formats
-        document.getElementById('codeSaver').value = data;
-        console.log('changed');
-      }
-    </script>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
+      lineNumbers: true,
+      theme: 'monokai',
+      mode: 'javascript',
+      lineWrapping: true,
+      styleActiveLine: true,
+    });
+
+    function saveCode () {
+      const data = editor.doc.getValue();
+      console.log(data);
+      document.getElementById('codeSaver').value = data;
+    }
+    // function saveCodeFetch() {
+    //   const data = { codeSaver: editor.doc.getValue()}; // this gets the data out with the formats
+    //   console.log(data);
+    //   // const form = new FormData();
+    //   // form.append('codeSaver', JSON.stringify(data));
+    //   // console.log(form);
+    //  fetch('/save', {
+    //     method: 'POST',
+    //     body: JSON.stringify(data),
+    //     headers: {"Content-type": "application/json; charset=UTF-8"}
+    //   })
+    //   .then(function(res){return res.json();})
+    //   .then(json => console.log(json));
+    // }
+  </script>
 </body>
 
 </html>
