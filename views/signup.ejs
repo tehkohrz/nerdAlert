@@ -1,0 +1,37 @@
+<%- include('headerBar',{navData}) %>
+<% if (failed == 'post') { %>
+  <h2 class="formErrorMsg">Sign up failed, please try again.</h2>
+  <% } if (failed == 'username') {%> 
+  <h2 class="formErrorMsg">Username has been taken, try another one.</h2>
+<% } %>
+     
+<div class="card signUpCard ">
+  <div class="card-header signUpHeader">Sign Up to save your code!</div>
+  <div class="card-body">
+    <div class="card-title signUpTitle">SignUp</div>
+    <form method="POST" action="/signup">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Full Name" aria-label="realName" name="realName" id="realName" value="<%= formData.realName %>">
+        <span class="input-group-text">@</span>
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username" name="userName" value="<%= formData.userName %>">
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="password">Password</span>
+        <input type="text" class="form-control" id="password" aria-describedby="password" name="password" value="<%= formData.password%>">
+      </div>
+      <div class="input-group">
+        <span class="input-group-text">Anything about yourself</span>
+        <textarea class="form-control" aria-label="about" name="about" value="<%= formData.about %>"></textarea>
+      </div>
+      <div class="row">
+        <button class="btn btn-dark formButtons col-md-3" type="submit">Submit</button>
+        <button class="btn btn-dark formButtons col-md-3" type="reset">Reset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div> <!-- for the main container closing -->
+</body>
+
+</html>

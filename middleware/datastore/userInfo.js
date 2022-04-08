@@ -1,88 +1,103 @@
 import pool from './initPG.js';
 
-function queryError(result) {
+function checkQuery(result) {
   if (result.rows.length < 1) {
     console.log('No entries found');
-    return null;
+    return false;
   }
+  if (result.rows.length == 1){
+    return result.rows[0];
+  }
+  return result.rows;
 }
 
 // GET INFORMATION
 
 // Retrieve userId using userName stored in cookie
-export function getUserId(userName) {
-  const sqlQuery = `SELECT id FROM users WHERE user_name = ${userName}`;
-  const result = async () => {
-    pool.query(sqlQuery);
-    try {
-      const userId = result.rows[0];
-      return userId;
-    } catch (error) {
-      console.log(error.stack);
-      return queryError(result);
-    }
-  };
-}
+export async function getUserId(userName) {
+  const sqlQuery = `SELECT id FROM users WHERE username = '${userName}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    const userId = checkQuery(result);
+    return userId.id;
+  } catch (error) {
+    console.log(error.stack);
+    return error;
+  }
+};
+
 // Retrieve user info based on userName
 // Returns info {object} or null if not found
-export function getUserInfo(userName) {
-  const sqlQuery = `SELECT * FROM users WHERE user_name = ${userName}`;
-  const result = async () => {
-    pool.query(sqlQuery);
-    try {
-      const userInfo = result.rows[0];
-      return userInfo;
-    } catch (error) {
-      console.log(error.stack);
-      return queryError(result);
-    }
-  };
-}
+export async function getUserInfo(userName) {
+  const sqlQuery = `SELECT * FROM users WHERE username = '${userName}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    const userInfo = checkQuery(result);
+    return userInfo;
+  } catch (error) {
+    console.log(error.stack);
+    return error;
+  }
+};
+
 // Retrieve groups that the user belong to using userName
 // Returns array of matching group data
-export function getUserGroups(userName) {
-  const sqlQuery = `SELECT users.id, users.userName, groups.id, groups.id, groups.user_id FROM users INNER JOIN groups ON users.id = groups.user_id WHERE user.userName = ${userName}`;
-  const result = async () => {
-    pool.query(sqlQuery);
-    try {
-      const userGroups = result.rows;
-      return userGroups;
-    } catch (error) {
-      console.log(error.stack);
-      return queryError(result);
-    }
-  };
-}
+export async function getUserGroups(userName) {
+  const sqlQuery = `SELECT users.id, users.username, group_user.id, group_user.user_id, group_user.group_id FROM users INNER JOIN group_user ON users.id = group_user.user_id WHERE users.username = '${userName}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    const userGroups = checkQuery(result);
+    return userGroups;
+  } catch (error) {
+    console.log(error.stack);
+    return error;
+  }
+};
 
-export function getUserIdGroups(userId) {
-  const sqlQuery = `SELECT * FROM groups WHERE user_id = ${userId}`;
-  const result = async () => {
-    pool.query(sqlQuery);
-    try {
-      const userGroups = result.rows;
-      return userGroups;
-    } catch (error) {
-      console.log(error.stack);
-      return queryError(result);
-    }
-  };
-}
+
+export async function getUserIdGroups(userId) {
+  const sqlQuery = `SELECT * FROM group_user WHERE user_id = '${userId}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    console.log("User's groups retrieved");
+    const userGroups = checkQuery(result);
+    return userGroups;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
 
 // Retrieve all users in a particular group given the groupname
 // Returns array of all users and info that are in the group
-function usersInGroup(groupName) {
-  const sqlQuery = `SELECT users.id, users.userName, users.realName, groups.id, groups.name, group_user.user_id, group_user.group_id FROM groups INNER JOIN group_user ON group.id = groups_user.group_id INNER JOIN users ON user.id = group_user.user_id WHERE group.name = ${groupName}`;
-  const result = async () => {
-    pool.query(sqlQuery);
-    try {
-      const usersInGroup = result.rows;
-      return usersInGroup;
-    } catch (error) {
-      console.log(error.stack);
-      return queryError(result);
-    }
+async function usersInGroup(groupName) {
+  const sqlQuery = `SELECT users.id, users.username, users.realname, groups.id, groups.name, group_user.user_id, group_user.group_id FROM groups INNER JOIN group_user ON group.id = groups_user.group_id INNER JOIN users ON user.id = group_user.user_id WHERE groups.name = '${groupName}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    const usersInGroup = checkQuery(result);
+    return usersInGroup;
+  } catch (error) {
+    console.log(error.stack);
+    return error;
   }
 }
+
+
+// INSERT USER INFO
+
+// Insert userInfo given an object of userData
+export async function insertUser(userData) {
+  const sqlQuery = `INSERT INTO users (id, username, realname, password, about, dateJoined) VALUES ('${userData.userId}','${userData.userName}', '${userData.realName}','${userData.hashedPassword}','${userData.about}','${userData.dateJoined}')`;
+  try {
+    const result = await pool.query(sqlQuery);
+    return true;
+  } catch (error) {
+    console.log(error.stack);
+    return false;
+  }
+};
+
 // ALTER INFORMATION
 
 // DELETE INFORMATION

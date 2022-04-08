@@ -1,0 +1,26 @@
+<%- include('headerBar',{navData}) %>
+
+<div class="card loginCard ">
+  <div class="card-body">
+    <div class="card-title loginTitle">Login</div>
+    <form method="POST" action="/login">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="userNameInput" placeholder="Username" name="userName">
+        <label for="userNameInput">Username</label>
+      </div>
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+        <label for="floatingPassword">Password</label>
+      </div>
+      <div class="'row">
+        <button class="btn btn-dark" type="submit">Login</button>
+        <a href="#">Forgot Password</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div> <!-- for the main container closing -->
+</body>
+
+</html>

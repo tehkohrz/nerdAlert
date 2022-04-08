@@ -1,21 +1,79 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>CodeMirror</title>
+    <meta charset="utf-8" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<head>
-  <title>CodeMirror</title>
-  <meta charset="utf-8">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-  </script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <!-- Scripts and CSS for Codemirror -->
-  <script type="text/javascript" src="codemirror/lib/codemirror.js">
-  </script>
-   <script type="text/javascript" src="codemirror/addon/selection/active-line.js">
-  </script>
-  <link rel="stylesheet" href="codemirror/lib/codemirror.css">
-  <link rel="stylesheet" href="codemirror/theme/monokai.css">
-  <script type="text/javascript" src="codemirror/mode/javascript/javascript.js"> </script>
-  </link>
-</head>
+  <body>
+    <div class="container-fluid">
+      <!--Main container opening-->
+
+      <div class="wrapper">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="/">nerdAlert</a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul class="navbar-nav">
+                <% if(navData.loggedIn) {%>
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/"
+                    >New Code</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/files/<%=navData.userName%>"
+                    >Your Code</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Groups</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/profile/<%=navData.userName%>"
+                    ><%=navData.userName%></a
+                  >
+                </li>
+                <% } else {%>
+                <li class="nav-item">
+                  <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/signup">SignUp</a>
+                </li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </body>
+</html>

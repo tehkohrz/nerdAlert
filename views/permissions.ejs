@@ -1,0 +1,27 @@
+<!-- toggle menu for permission selection -->
+<div class="row permissionList" id="permissionList" style="display: none">
+  <% editorData.permissions.forEach((group) => { %>
+  <div class="form-check">
+    <% if(group.display == 'Me'){ %>
+    <input
+      class="form-check-input"
+      type="checkbox"
+      value="<%=group.value%>"
+      id="permissions"
+      name="permissions"
+      checked
+    />
+    <% } %>
+    <input
+      class="form-check-input"
+      type="checkbox"
+      value="<%=group.value%>"
+      id="permissions"
+      name="permissions"
+    />
+    <label class="form-check-label" for="permissions">
+      <%=group.display%>
+    </label>
+  </div>
+  <%}) %>
+</div>
