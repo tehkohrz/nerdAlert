@@ -1,0 +1,32 @@
+<%- include('headerBar',{navData}) %>
+
+<div class="wrapper fileDisplay">
+  <div class="col titleCol">Your Files</div>
+  <% if (errMsg) {%>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong><<%=errMsg%> ></strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+    <% } %>  
+  <% if(!listOfFiles) {%>
+  <div class="noFilesMsg">You have no files! Start coding now!!!</h1>
+    <% } else { %>
+    <form class="fileListForm">
+      <div class="list-group">
+        <!-- todo: Check if this needs a form to run -->
+        <% listOfFiles.forEach((file) => { %>
+          <div class="listRow row">
+        <a href="/code/<%=file.id%>" class="fileItem col-sm-10"><%=file.filename%></a>
+        <button type="submit" formaction="/code/<%=file.id%>?_method=DELETE" formmethod="POST"
+          class="deleteButton col-sm-2">Delete</button>
+          </div>
+        <% })} %>
+      </div>
+    </form>
+
+  </div>
+
+</div> <!-- for the main container closing -->
+</body>
+
+</html>

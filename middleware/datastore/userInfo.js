@@ -5,7 +5,7 @@ function checkQuery(result) {
     console.log('No entries found');
     return false;
   }
-  if (result.rows.length == 1){
+  if (result.rows.length == 1) {
     return result.rows[0];
   }
   return result.rows;
@@ -24,7 +24,7 @@ export async function getUserId(userName) {
     console.log(error.stack);
     return error;
   }
-};
+}
 
 // Retrieve user info based on userName
 // Returns info {object} or null if not found
@@ -38,7 +38,7 @@ export async function getUserInfo(userName) {
     console.log(error.stack);
     return error;
   }
-};
+}
 
 // Retrieve groups that the user belong to using userName
 // Returns array of matching group data
@@ -52,8 +52,7 @@ export async function getUserGroups(userName) {
     console.log(error.stack);
     return error;
   }
-};
-
+}
 
 export async function getUserIdGroups(userId) {
   const sqlQuery = `SELECT * FROM group_user WHERE user_id = '${userId}'`;
@@ -66,8 +65,7 @@ export async function getUserIdGroups(userId) {
     console.log(error);
     return error;
   }
-};
-
+}
 
 // Retrieve all users in a particular group given the groupname
 // Returns array of all users and info that are in the group
@@ -83,7 +81,6 @@ async function usersInGroup(groupName) {
   }
 }
 
-
 // INSERT USER INFO
 
 // Insert userInfo given an object of userData
@@ -96,8 +93,30 @@ export async function insertUser(userData) {
     console.log(error.stack);
     return false;
   }
-};
+}
 
 // ALTER INFORMATION
+
+// todo: adiitional option for password or no pw
+// Update user;s profile info
+export async function updateUser(userData) {
+  const sqlQuery = 'UPDATE users SET username = $1, realname =$2, about=$3, password=$4 WHERE id = $5 RETURNING *;';
+  const queryArray = [
+    userData.username,
+    userData.realname,
+    userData.about,
+    userData.hashedPassword,
+    userData.id,
+  ];
+  try {
+    const result = await pool.query(sqlQuery, queryArray);
+    console.log('DB update completed');
+    const savedInfo = checkQuery(result);
+    return savedInfo;
+  } catch (error) {
+    console.log(error.stack);
+    return false;
+  }
+}
 
 // DELETE INFORMATION

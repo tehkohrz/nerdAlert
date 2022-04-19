@@ -1,3 +1,4 @@
+import sqlString from 'sqlstring';
 import pool from './initPG.js';
 
 function checkQuery(result) {
@@ -5,9 +6,9 @@ function checkQuery(result) {
     console.log('No entries found');
     return false;
   }
-  if (result.rows.length == 1) {
-    return result.rows[0];
-  }
+  // if (result.rows.length == 1) {
+  //   return result.rows[0];
+  // }
   return result.rows;
 }
 
@@ -142,6 +143,106 @@ export async function insertPermission(codeData) {
     return true;
   } catch (error) {
     console.log(error);
+    return false;
+  }
+}
+
+// UPDATE
+
+export async function updateCode(codeData) {
+  const sqlQuery = 'UPDATE files SET codedata =$1, filename = $2 WHERE id = $3';
+  const queryArray = [codeData.codeData, codeData.fileName, codeData.id];
+  try {
+    const result = await pool.query(sqlQuery, queryArray);
+    console.log(`File ${codeData.fileName} Updated`);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+// DELETE
+export async function deleteCode(codeId, userId) {
+  const sqlQuery = `DELETE FROM files WHERE id = ${sqlString.escape(codeId)} AND user_id = ${sqlString.escape(userId)}`;
+  console.log({ sqlQuery });
+  try {
+    const result = await pool.query(sqlQuery);
+    console.log('File was deleted');
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+export async function deletePermissions(codeId) {
+  const sqlQuery = `DELETE FROM filePermissions WHERE file_id = ${sqlString.escape(codeId)}`;
+  console.log({ sqlQuery });
+  try {
+    const result = await pool.query(sqlQuery);
+    console.log('File permissions was deleted');
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+// Share CODE update db
+export async function updateIntoTemp(codeData, newFile) {
+  // If it is a new file
+  if (newFile) {
+    const sqlQuery = `INSERT INTO sharedcode (id, codedata, filename, date) VALUES (${sqlString.escape(codeData.shareId)},'${codeData.codeSaver}', ${sqlString.escape(codeData.fileName)},'${codeData.date}')`;
+    try {
+      const result = await pool.query(sqlQuery);
+      console.log('File inserted into temp db.');
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  } else {
+    // if file was found in the db then update it (only when still in the same session)
+    const sqlQuery = `UPDATE sharedcode SET codedata = '${codeData.codeSaver}', filename =${sqlString.escape(codeData.fileName)}, date = '${codeData.date}' WHERE id = ${sqlString.escape(codeData.shareId)}`;
+    try {
+      const result = await pool.query(sqlQuery);
+      console.log('File update in temp db.');
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+}
+
+// Check if file exist in the temp db
+export async function checkTempFile(id) {
+  const sqlQuery = `SELECT * FROM sharedcode where id ='${id}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    // if there is a result return newfile = false
+    if (result.rows.length > 0) {
+      console.log('temp identified');
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.log(error.stack);
+    return false;
+  }
+}
+// Get temp file data
+export async function getTempFile(id) {
+  const sqlQuery = `SELECT * FROM sharedcode where id ='${id}'`;
+  try {
+    const result = await pool.query(sqlQuery);
+    console.log('temp identified');
+    const tempFile = checkQuery(result);
+    return tempFile;
+    return false;
+  } catch (error) {
+    console.log(error.stack);
     return false;
   }
 }

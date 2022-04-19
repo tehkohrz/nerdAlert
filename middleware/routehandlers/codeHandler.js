@@ -1,6 +1,8 @@
 import {
   v4 as uuidv4,
-} from 'uuid';
+}
+  from 'uuid';
+import moment from 'moment';
 import {
   escapeSpecials,
   returnSpecials,
@@ -9,8 +11,11 @@ import {
   getCodeFile,
   insertPermission,
   saveCode,
+  updateCode,
+  getTempFile,
+  updateIntoTemp,
+  checkTempFile,
 } from '../datastore/fileInfo.js';
-import { getUserIdGroups } from '../datastore/userInfo.js';
 
 // POST Handler for posting code into the DB
 
@@ -23,7 +28,7 @@ export async function postCodeHandler(req, res) {
   codeData.userId = req.userId;
   codeData.fileName = req.body.fileName;
   codeData.permissionId = uuidv4();
-  console.log('fileId', codeData.id);
+  console.log('fileId saved', codeData.id);
   // Insert into DB
   const result = await saveCode(codeData);
   // Insert persmission into DB
@@ -32,7 +37,12 @@ export async function postCodeHandler(req, res) {
   res.redirect(`/code/${codeData.id}`);
 }
 
+// GET Handler to show saved code for editing
 export async function getCodeHandler(req, res) {
+  // Set shareId into cookies
+  const shareId = uuidv4();
+  res.cookie('shareId', shareId);
+  console.log('Getting code');
   const navData = {
     loggedIn: req.isUserLoggedIn,
   };
@@ -44,7 +54,10 @@ export async function getCodeHandler(req, res) {
   }
   if (req.isUserLoggedIn) {
     // Get userId for links and other queries
-    const { userId } = req;
+    const {
+      userId,
+    } = req;
+    // Set Session id to be the correct file
     // Update navData
     navData.userName = req.cookies.userName;
     navData.loggedIn = req.isUserLoggedIn;
@@ -52,44 +65,112 @@ export async function getCodeHandler(req, res) {
     // editorData for EJS
     const editorData = {};
     // Query for codedata into editor data
-    editorData.codeData = await getCodeFile(id);
-    // Return specials into the code
-    editorData.codeData.codedata = returnSpecials(editorData.codeData.codedata);
-    // Array of Groups User is in
-    const groups = await getUserIdGroups(userId);
-    const sharedFiles = {};
-    const permissionArray = [];
-    permissionArray.push({
-      display: 'Me',
-      value: userId,
-    });
-    if (groups) {
-      const groupArray = [];
-      if (!groups.length) {
-        groupArray.push(groups);
-        permissionArray.push({
-          display: groups.name,
-          value: groups.id,
-        });
-      } else {
-        groupArray = [...groups];
-      }
-      // Retrieve files owned by the group
-      await groupArray.foreach((group) => {
-        // todo: check for return of promise then end with promise.all outside of loop
-        const groupFiles = getUserIdFiles(group.id);
-        sharedFiles[group.name] = groupFiles;
-        permissionArray.push({
-          display: group.name,
-          value: group.id,
-        });
+    const [savedCode] = await getCodeFile(id);
+    // if the viewer is the owner of the file then show
+    if (savedCode.user_id === navData.userId) {
+      console.log('Authorised access');
+      editorData.codeData = savedCode;
+      // Return specials into the code
+      res.cookie('codeSessionId', editorData.codeData.id);
+      editorData.codeData.codedata = returnSpecials(editorData.codeData.codedata);
+      editorData.codeView = true;
+      editorData.shareId = shareId;
+      editorData.shareUrl = `localhost:3004/share/${shareId}`;
+      res.render('codeView', {
+        navData,
+        editorData,
+      });
+    } else {
+      // For unauthorised access
+      console.log('Unauthorised access');
+      editorData.codeView = false;
+      editorData.unAuthorised = true;
+      res.render('main', {
+        navData,
+        editorData,
       });
     }
-    editorData.permissions = permissionArray;
-    editorData.codeView = true;
-    res.render('codeView', {
-      navData,
-      editorData,
-    });
   }
+}
+
+// PUT Handler to update the code already saved into the db
+export async function updateCodeHandler(req, res) {
+  const codeData = {};
+  codeData.id = req.params.id;
+  codeData.codeData = req.body.codeSaver;
+  codeData.fileName = req.body.fileName;
+  codeData.userId = req.userId;
+  // remove special characters
+  codeData.codeData = escapeSpecials(codeData.codeData);
+  // Check for authorised access
+  const [savedCode] = await getCodeFile(codeData.id);
+  if (savedCode.user_id === codeData.userId) {
+    // update into DB
+    const codeUpdate = await updateCode(codeData);
+    if (codeUpdate) {
+      console.log('Code Updated');
+      // res.redirect(`/code/${codeData.id}`);
+    } else {
+      res.send('Update failed');
+    }
+  } else {
+    // not the right user to edit and save
+    res.redirect(`/code/${codeData.id}`);
+  }
+}
+
+export async function shareCodeHandler(req, res) {
+  console.log('into shared handler');
+  const {
+    shareId,
+  } = req.cookies;
+  const codeData = {
+    ...req.body,
+  };
+  codeData.shareId = shareId;
+  codeData.codeSaver = escapeSpecials(codeData.codeSaver);
+  codeData.date = moment().format('DD-MMM-YYYY');
+  // SQL handler for tempDB
+  const newFile = await checkTempFile(shareId);
+  console.log('updating into db', { newFile });
+  // todo: error handling if code was not updated into Db
+  const updatedIntoSharedCode = await updateIntoTemp(codeData, newFile);
+  // redirect to shared code url
+  res.redirect(`/share/${shareId}/view`);
+}
+
+// GET Share code handler
+
+export async function getShareCodeHandler(req, res) {
+  const {
+    shareId,
+  } = req.params;
+  const navData = {
+    loggedIn: req.isUserLoggedIn,
+  };
+  console.log(navData);
+  // log user data if they are logged in
+  if (req.isUserLoggedIn) {
+    // Get userId for links and other queries
+    const {
+      userId,
+    } = req;
+    // Set Session id to be the correct file
+
+    // Update navData
+    navData.userName = req.cookies.userName;
+    navData.loggedIn = req.isUserLoggedIn;
+    navData.userId = userId;
+  }
+  // search in share db else go main
+  const editorData = {};
+  // set codeview to true
+  editorData.codeView = true;
+  const savedCode = await getTempFile(shareId);
+  [editorData.codeData] = savedCode;
+  editorData.codeData.codedata = returnSpecials(editorData.codeData.codedata);
+  res.render('codeView', {
+    navData,
+    editorData,
+  });
 }

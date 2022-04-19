@@ -8,7 +8,7 @@
    <%- include('sideBar',{sideBarData}) %>
    <% } %> 
     </div>
-    <div class="codeEditor-wrapper <%= navData.loggedIn === true?  'col-md-9':'col' %>">
+    <div class="codeEditor-wrapper <%= navData.loggedIn === true?  'col':'col' %>">
       <%- include('codeEditor', {editorData}) %>
     </div>
   </div>

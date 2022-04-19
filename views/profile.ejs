@@ -1,0 +1,47 @@
+<%- include('headerBar',{navData}) %>
+<div class="signUpForm wrapper">
+  <% if (failed === 'post') { %>
+  <h2 class="formErrorMsg">Edit failed, please try again.</h2>
+  <% } if (failed === 'username') {%>
+  <h2 class="formErrorMsg">Username has been taken, try another one.</h2>
+  <% } if (failed === 'password') {%>
+  <h2 class="formErrorMsg">Password is incorrect.</h2>
+  <% } %>
+
+  <div class="card signUpCard ">
+    <div class="card-header signUpHeader"><%=userInfo.username%>'s Profile</div>
+    <div class="card-body">
+      <div class="card-title signUpTitle">Details</div>
+      <form method="POST" action="/profile/<%=userInfo.username%>?_method=PUT">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Full Name" aria-label="realName" name="realname"
+            id="realName" value="<%= userInfo.realname %>" required>
+          <span class="input-group-text">@</span>
+          <input type="text" class="form-control" placeholder="Username" aria-label="Username" name="username"
+            value="<%= userInfo.username %>" required>
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="password">Old Password</span>
+          <input type="text" class="form-control" id="password" aria-describedby="password" name="password">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="newPassword">New Password</span>
+          <input type="text" class="form-control" id="newPassword" aria-describedby="newPassword" name="newPassword">
+        </div>
+        <div class="input-group">
+          <span class="input-group-text">Anything about yourself</span>
+          <textarea class="form-control" rows="8" aria-label="about" name="about"
+            value=""><%=userInfo.about%></textarea>
+        </div>
+        <div class="row signupButtonRow gap-2">
+          <button class="btn btn-dark formButtons col-md-3 " type="submit">Submit</button>
+          <button class="btn btn-dark formButtons col-md-3" type="reset">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div> <!-- for the main container closing -->
+</body>
+
+</html>

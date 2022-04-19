@@ -14,13 +14,17 @@ export async function mainHandler(req, res) {
   const codeSessionId = uuidv4();
   console.log('Reset sessionId');
   res.cookie('codeSessionId', codeSessionId);
+  // Share code unique
+  const shareId = uuidv4();
+  res.cookie('shareId', shareId);
   // Create navData object for navBar use
   const navData = {
     loggedIn: req.isUserLoggedIn,
   };
   const sideBarData = {};
   const editorData = {};
-  editorData.codeData = '';
+  editorData.shareId = shareId;
+  editorData.shareUrl = `localhost:3004/share/${shareId}`;
   editorData.permissions = [];
   // Check for req.login to render profile specific page
   if (req.isUserLoggedIn) {
@@ -30,7 +34,6 @@ export async function mainHandler(req, res) {
     } = req;
     // Update navData
     navData.userName = req.cookies.userName;
-    navData.loggedIn = req.isUserLoggedIn;
     navData.userId = userId;
 
     // todo: fix side bar issues after fixing file structure

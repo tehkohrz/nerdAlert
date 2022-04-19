@@ -15,31 +15,30 @@ escaped single quotes will be \\'
 
 const charMapping = [
   {
-    actual: "\\'" ,
-    map: "/q/eqt",
+    actual: "\\'",
+    map: '/q/eqt',
   },
   {
-    actual: '\\"' ,
-    map: "/qq/eqt",
+    actual: '\\"',
+    map: '/qq/eqt',
   },
   {
-    actual: "`" ,
-    map: "/sq/sq",
+    actual: '`',
+    map: '/sq/sq',
   },
   {
-    actual: "'" ,
-    map: "/q/qt",
+    actual: "'",
+    map: '/q/qt',
   },
   {
-    actual: '"' ,
-    map: "/qq/qt" ,
+    actual: '"',
+    map: '/qq/qt',
   },
   {
-    actual: ";" ,
-    map: "/sm/cl",
+    actual: ';',
+    map: '/sm/cl',
   },
 ];
-
 
 export function escapeSpecials(string) {
   let escapedString = string;
@@ -50,18 +49,22 @@ export function escapeSpecials(string) {
     escapedString = escapedString.replaceAll(char.actual, char.map);
     // console.log('Escaped: ',escapedString);
     // console.log('\n');
-  })
+  });
   return escapedString;
 }
 
 export function returnSpecials(escapedString) {
   let string = escapedString;
+  // Empty string passed
+  if (!escapedString) {
+    return '';
+  }
   // find escaped specials first sorted in mapping array sequence
   charMapping.forEach((char) => {
     // console.log('Before:', string);
     string = string.replaceAll(char.map, char.actual);
     // console.log('After: ',string);
     // console.log('\n');
-  })
+  });
   return string;
 }

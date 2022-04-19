@@ -1,66 +1,77 @@
-<div class="container-fluid">
-  <!-- form for entering the code details and buttons for sending into the db -->
-  <form <%if(editorData.codeView) { %>
-     action="<%=editorData.codeData.id%>?_method=PUT" method="POST"
-    <% } else { %> 
-  action="/save" method="POST"
-  <% } %> 
-  >
+<!-- Warning for authorised access -->
+<% if (editorData.unAuthorised) {%>
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Opps that is not your file!</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<% } %>
+
+<!-- form for entering the code details and buttons for sending into the db -->
+<div class="row formRow w-100">
+  <form>
     <!-- hidden text area to save code -->
     <textarea name="codeSaver" style="display: none" id="codeSaver"></textarea>
     <div class="row">
       <div class="col-9 fileSelectors">
-        <input class="form-control-lg" style='width:100%; height:100%' type="text" name="fileName" id='fileNameInput' placeholder="File Name" <%if(editorData.codeView){%> value ='<%=editorData.codeData.filename%>'<%}%> >
+        <input class="form-control-lg" type="text" name="fileName" id='fileNameInput' placeholder="File Name"
+          <%if(editorData.codeView){%> value='<%=editorData.codeData.filename%>' <%}%> >
       </div>
-      <div class="buttonSelectors col-3 d-grid gap-1">
-        <button class='btn btn-dark' onclick='saveCode()'>Save</button>
-        <button class="btn btn-dark" onclick="permissionToggle">Permissions</button>
+      <div class="buttonSelectors col-3">
+        <!-- button disabled if unauthorised access via url -->
+        <button class='btn btn-dark editorButtons' onclick='saveCode()' <%if (editorData.unAuthorised) {%> disabled
+          <% } %> <%if(editorData.codeView) { %> formaction="/code/<%=editorData.codeData.id%>/update?_method=PUT"
+          formmethod="POST" <% } else { %> formaction="/save" formmethod="POST" <% } %>>Save</button>
+        <!-- Share code that generates a url for code stored within the shared db -->
+        <button type="submit" class="btn btn-dark editorButtons sharePopover" title="Share your code"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="<%=editorData.shareUrl%>" formaction="/share/<%=editorData.shareId%> " formmethod="POST" onclick="saveCode()">
+          Share
+        </button>
       </div>
     </div>
-    
   </form>
-  <textarea name="codeEditor" id="codeEditor"><%if(editorData.codeView){%><%=editorData.codeData.codedata%><%}%></textarea>
-  <!-- Init for Code editor -->
-  <!-- Scripts and CSS for Codemirror -->
-  <script type="text/javascript" src="/codemirror/lib/codemirror.js"></script>
-  <script type="text/javascript" src="/codemirror/addon/selection/active-line.js"></script>
-  <script type="text/javascript" src="/codemirror/addon/edit/matchBrackets.js"> </script>
-  <script type="text/javascript" src="/codemirror/addon/edit/closeBrackets.js"> </script>
-  <script type="text/javascript" src="/codemirror/addon/fold/foldcode.js"> </script>
-  <script type="text/javascript" src="/codemirror/addon/fold/foldgutter.js"> </script>
-  <link rel="stylesheet" href="/codemirror/lib/codemirror.css">
-  <link rel="stylesheet" href="/codemirror/addon/fold/foldgutter.css">
-  <link rel="stylesheet" href="/codemirror/theme/monokai.css">
-  <script type="text/javascript" src="/codemirror/mode/javascript/javascript.js"></script>
-  <script>
-    var editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
-      lineNumbers: true,
-      theme: 'monokai',
-      mode: 'javascript',
-      lineWrapping: true,
-      styleActiveLine: true,
-      matchBrackets: true,
-      foldGutter: true,
-      closeBrackets: true,
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-    });
-
-    function saveCode() {
-      const data = editor.doc.getValue();
-      console.log(data);
-      document.getElementById('codeSaver').value = data;
-    }
-
-    // function permissionToggle(e) {
-    //   console.log('i stopped');
-    //   const list = document.getElementById('permissionList');
-    //   if(list.style.display == 'none') {
-    //     list.style.display = 'block';
-    //   } else {
-    //     list.style.display = 'none';
-    //   }
-    // }
-  </script>
-
 </div>
+
+<!--CODE EDITOR for Codemirror  -->
+<div class="row editorRow w-100">
+  <textarea name="codeEditor"
+    id="codeEditor"><%if(editorData.codeView){%><%=editorData.codeData.codedata%><%}%></textarea>
+</div>
+
+<!-- Init for Code editor -->
+<!-- Scripts and CSS for Codemirror -->
+<script type="text/javascript" src="/codemirror/lib/codemirror.js"></script>
+<script type="text/javascript" src="/codemirror/addon/selection/active-line.js"></script>
+<script type="text/javascript" src="/codemirror/addon/edit/matchBrackets.js"> </script>
+<script type="text/javascript" src="/codemirror/addon/edit/closeBrackets.js"> </script>
+<script type="text/javascript" src="/codemirror/addon/fold/foldcode.js"> </script>
+<script type="text/javascript" src="/codemirror/addon/fold/foldgutter.js"> </script>
+<link rel="stylesheet" href="/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="/codemirror/theme/monokai.css">
+<script type="text/javascript" src="/codemirror/mode/javascript/javascript.js"></script>
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
+    lineNumbers: true,
+    theme: 'monokai',
+    mode: 'javascript',
+    lineWrapping: true,
+    styleActiveLine: true,
+    matchBrackets: true,
+    foldGutter: true,
+    closeBrackets: true,
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    autofocus: true,
+  });
+  editor.setSize('100%');
+
+  var popover = new bootstrap.Popover(document.querySelector('.sharePopover'), {
+  container: 'body'
+})
+
+  function saveCode() {
+    const data = editor.doc.getValue();
+    console.log(data);
+    document.getElementById('codeSaver').value = data;
+  }
+</script>
+
 </div>

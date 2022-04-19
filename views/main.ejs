@@ -1,15 +1,14 @@
 <%- include('headerBar',{navData}) %>
 
-<div class="wrapper">
-  <div class="row">
+<div class="wrapper mainContent ">
     <!-- sidebar shows only for login use -->
-    <% if (navData.loggedIn === 'win') {%> 
+    <% if (navData.loggedIn === 'win') {%>
     <div class="sideBar-wrapper col-md-3">
-   <%- include('sideBar',{sideBarData}) %>
-   <% } %> 
     </div>
-    <div class="codeEditor-wrapper <%= navData.loggedIn === true?  'col-md-9':'col' %>">
-      <%- include('codeEditor', {editorData,codeView:false}) %>
+      <%- include('sideBar',{sideBarData}) %>
+      <% } %>
+      <div class="codeEditor-wrapper <%= navData.loggedIn === true?  'col-12':'col-12' %>">
+        <%- include('codeEditor', {editorData}) %>
     </div>
   </div>
 </div>

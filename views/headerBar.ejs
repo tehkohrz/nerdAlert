@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CodeMirror</title>
+    <title>{nerdAlert}</title>
     <meta charset="utf-8" />
     <script
       src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -19,60 +19,62 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link href="/styles.css" rel="stylesheet" />
   </head>
 
   <body>
-    <div class="container-fluid">
-      <!--Main container opening-->
-
-      <div class="wrapper">
-        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="/">nerdAlert</a>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNavDropdown"
-              aria-controls="navbarNavDropdown"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav">
-                <% if(navData.loggedIn) {%>
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="/"
-                    >New Code</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/files/<%=navData.userName%>"
-                    >Your Code</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Groups</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/profile/<%=navData.userName%>"
-                    ><%=navData.userName%></a
-                  >
-                </li>
-                <% } else {%>
-                <li class="nav-item">
-                  <a class="nav-link" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/signup">SignUp</a>
-                </li>
-                <% } %>
-              </ul>
+    <!--Main container opening-->
+    <div class="megaContainer min-vh-95">
+      <div class="container-fluid navContainer">
+        <div class="wrapper">
+          <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="/">{ ! }</a>
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                  <% if(navData.loggedIn) {%>
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/"
+                      >New Code</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/files/<%=navData.userName%>"
+                      >Your Code</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Groups</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/profile/<%=navData.userName%>"
+                      ><%=navData.userName%></a
+                    >
+                  </li>
+                  <% } else {%>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/signup">SignUp</a>
+                  </li>
+                  <% } %>
+                </ul>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </div>
       </div>
     </div>
   </body>

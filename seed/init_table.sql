@@ -30,3 +30,10 @@ CREATE TABLE IF NOT EXISTS group_user (
   user_id TEXT,
   group_id TEXT
 );
+
+CREATE TABLE IF NOT EXISTS sharedcode (
+  id TEXT PRIMARY KEY,
+  fileName TEXT,
+  codeData TEXT,
+  date TEXT
+);

@@ -1,0 +1,104 @@
+body {
+  background-color: rgb(46, 46, 46);
+}
+.navbar-brand {
+  color: orange;
+  font-size: 40px;
+  font-weight: bolder;
+}
+.nav-item {
+  font-size: 25px;
+}
+
+/* MAIN VIEW */
+.navContainer,
+.editorContainer {
+  padding: 0;
+}
+
+.fileSelectors {
+  padding-right: 2px;
+  padding-left: 0;
+}
+
+.buttonSelectors {
+  padding: 0px;
+}
+
+.mainRow,
+.editorRow,
+.formRow {
+  margin: 0;
+}
+
+.editorButtons {
+  font-size: 20px;
+  padding: 5px;
+  width: 98%;
+  border-color: aliceblue;
+}
+
+#fileNameInput {
+  width: 100%;
+  height: 100%;
+}
+
+/* FILE VIEW */
+.titleCol {
+  padding-left: 5px;
+  margin: 0;
+  font-size: 50px;
+  font-weight: bold;
+  color: aliceblue;
+}
+
+.noFilesMsg {
+  font-size: 35px;
+  color: aliceblue;
+}
+
+.fileItem {
+  font-size: 25px;
+  background-color: dimgray;
+  text-decoration: none;
+  color: aliceblue;
+}
+.fileItem:hover {
+  font-weight: bolder;
+  background-color: slategrey;
+  text-decoration: underline;
+  color: aliceblue;
+}
+
+.listRow {
+  margin: 0;
+  padding: 5px;
+}
+.deleteButton {
+  background-color: rgb(67, 5, 5);
+  color: aliceblue;
+}
+/* SIGNUP */
+.signupButtonRow {
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.signUpHeader {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.signUpTitle {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.formErrorMsg {
+  font-size: 25px;
+  color: aliceblue;
+  background-color: grey;
+}
+.signUpForm {
+  padding: 10px;
+}
